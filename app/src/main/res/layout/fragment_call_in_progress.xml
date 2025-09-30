@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/call_in_progress_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0D0D0D"
+    android:padding="24dp">
+
+    <!-- Alert Text ( Low Bandwidth) -->
+    <TextView
+        android:id="@+id/tvAlert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FF3B30"
+        android:textStyle="italic"
+        android:textSize="16sp"
+        android:background="#66000000"
+        android:padding="8dp"
+        android:text="@string/analyzing_bandwidth"
+        android:gravity="center"
+        android:visibility="visible"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="16dp"/>
+
+
+    <ImageView
+        android:id="@+id/app_icon_IV"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/tvAlert"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="157dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/icon" />
+
+    <!-- Caller/Recipient Name/Number / Conference Info -->
+    <TextView
+        android:id="@+id/tvCallerNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Caller Number"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_below="@id/app_icon_IV"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <!-- Call Duration -->
+    <TextView
+        android:id="@+id/tvCallDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:textColor="#AAAAAA"
+        android:textSize="18sp"
+        android:layout_below="@id/tvCallerNumber"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <!-- Call Button (Start new call) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/two_way_layout"
+        android:layout_marginBottom="60dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!-- Mute Button -->
+        <ImageButton
+            android:id="@+id/btnMute"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/circle_button_background"
+            android:contentDescription="Mute"
+            android:src="@drawable/mic_off" />
+
+        <!-- Speaker Button -->
+        <ImageButton
+            android:id="@+id/btnSpeaker"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginLeft="40dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circle_button_background"
+            android:contentDescription="Speaker"
+            android:src="@drawable/ic_speaker" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/two_way_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/btnEndCall"
+        android:layout_marginBottom="70dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/btnCall"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_below="@id/btnMute"
+        android:layout_marginRight="40dp"
+        android:background="@drawable/circle_button_background"
+        android:contentDescription="New Call"
+        android:src="@drawable/ic_add_call" />
+
+    <!-- Merge Button (Merge active calls into conference) -->
+    <ImageButton
+        android:id="@+id/btnMerge"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:src="@drawable/ic_call_merge"
+        android:background="@drawable/circle_button_background"
+        android:layout_marginLeft="40dp"
+        android:layout_below="@id/btnSpeaker"
+        android:layout_toRightOf="@id/btnCall"
+        android:layout_marginStart="32dp"
+        android:contentDescription="Merge Calls" />
+
+    </LinearLayout>
+
+    <!-- End Call Button -->
+    <ImageButton
+        android:id="@+id/btnEndCall"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/circle_red_button_background"
+        android:contentDescription="End Call"
+        android:src="@drawable/call_end" />
+
+</RelativeLayout>

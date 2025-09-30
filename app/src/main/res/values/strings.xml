@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">LinCall</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="call_history">Call History</string>
+    <string name="analyzing_bandwidth">Analyzing the Bandwidth...</string>
+</resources>
