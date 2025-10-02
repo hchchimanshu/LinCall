@@ -69,7 +69,9 @@ class IncomingCallFragment : Fragment() {
             parentFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragmentContainer,
-                    CallInProgressFragment.newInstance(call?.remoteAddress?.username ?: "Unknown")
+                    CallInProgressFragment.newInstance(call?.remoteAddress?.username ?: "Unknown",
+                        isIncoming = true )
+
                 )
                 .addToBackStack(null)
                 .commit()

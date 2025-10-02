@@ -43,23 +43,17 @@ class CallInProgressFragment : Fragment() {
 
     private var activeCalls: MutableList<Call> = mutableListOf()
     private var isConference: Boolean = false
-
-    private val updateDurationRunnable = object : Runnable {
-        override fun run() {
-            val elapsed = System.currentTimeMillis() - startTime
-            val minutes = TimeUnit.MILLISECONDS.toMinutes(elapsed)
-            val seconds = TimeUnit.MILLISECONDS.toSeconds(elapsed) % 60
-            binding.tvCallDuration.text = String.format("%02d:%02d", minutes, seconds)
-            handler.postDelayed(this, 1000)
-        }
-    }
+    private var isIncoming = false
 
     companion object {
         private const val ARG_CALL_NUMBER = "call_number"
-        fun newInstance(callNumber: String): CallInProgressFragment {
+        private const val ARG_IS_INCOMING = "is_incoming"
+
+        fun newInstance(callNumber: String, isIncoming: Boolean = false): CallInProgressFragment {
             val fragment = CallInProgressFragment()
             val bundle = Bundle()
             bundle.putString(ARG_CALL_NUMBER, callNumber)
+            bundle.putBoolean(ARG_IS_INCOMING, isIncoming)
             fragment.arguments = bundle
             return fragment
         }
@@ -86,10 +80,13 @@ class CallInProgressFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.tvCallerNumber.text = arguments?.getString(ARG_CALL_NUMBER) ?: "Unknown"
+        isIncoming = arguments?.getBoolean(ARG_IS_INCOMING) !! ?: false
+
+        binding.tvCallDuration.text = "Ringing..."
 
         // Start call duration timer
-        startTime = System.currentTimeMillis()
-        handler.post(updateDurationRunnable)
+//        startTime = System.currentTimeMillis()
+//        handler.post(updateDurationRunnable)
 
         // Audio setup
         val audioManager = requireContext().getSystemService(AudioManager::class.java)
@@ -99,6 +96,9 @@ class CallInProgressFragment : Fragment() {
         binding.btnEndCall.setOnClickListener {
             call?.terminate()
             parentFragmentManager.popBackStack()
+            if (isIncoming)
+                parentFragmentManager.popBackStack()
+
         }
 
         // Mute toggle
@@ -110,21 +110,7 @@ class CallInProgressFragment : Fragment() {
             audioManager.isSpeakerphoneOn = !audioManager.isSpeakerphoneOn
             binding.btnSpeaker.alpha = if (audioManager.isSpeakerphoneOn) 1f else 0.5f
         }
-        // New Call
-//        binding.btnCall.setOnClickListener {
-//            val core = LinphoneManager.core ?: return@setOnClickListener
-//            val newAddress = core.interpretUrl("sip:demo377@sip.linphone.org")
-//            if (newAddress != null) {
-//                val params = core.createCallParams(null)
-//                val newCall = core.inviteAddressWithParams(newAddress, params!!)
-//                if (newCall != null) {
-//                    activeCalls.add(newCall)
-//                }
-//                Toast.makeText(requireContext(), "Calling ${newAddress.asString()}", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(requireContext(), "Invalid address", Toast.LENGTH_SHORT).show()
-//            }
-//        }
+
         // New Call
         binding.btnCall.setOnClickListener {
             val core = LinphoneManager.core ?: return@setOnClickListener
@@ -216,49 +202,6 @@ class CallInProgressFragment : Fragment() {
             }
         }
 
-//        binding.btnMerge.setOnClickListener {
-//            if (activeCalls.size >= 2) {
-//                try {
-//                    val core = LinphoneManager.core ?: return@setOnClickListener
-//
-//                    // Create params for the conference
-//                    val params = core.createConferenceParams(null)
-//
-//                    // Try to find an existing conference
-//                    var conference: Conference? = core.searchConference(params, null, null, null)
-//
-//                    // If no conference exists, create one
-//                    if (conference == null) {
-//                        conference = core.createConferenceWithParams(params)
-//                    }
-//
-//                    conference?.let { conf ->
-//                        // Add all active calls
-//                        activeCalls.forEach { call ->
-//                            conf.addParticipant(call)
-//                        }
-//
-//                        isConference = true
-//
-//                        // Update UI
-//                        binding.tvCallerNumber.text = "Conference (${activeCalls.size})"
-//                        Toast.makeText(context, "Calls merged into conference", Toast.LENGTH_SHORT).show()
-//                    }
-//
-//                } catch (e: Exception) {
-//                    Toast.makeText(
-//                        context,
-//                        "Failed to merge calls: ${e.message}",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//            } else {
-//                Toast.makeText(context, "At least 2 calls required to merge", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-
-
-
         // Listen for call state changes
         coreListener = object : CoreListenerStub() {
             override fun onCallStateChanged(core: Core, call: Call, state: Call.State, message: String) {
@@ -273,7 +216,11 @@ class CallInProgressFragment : Fragment() {
                             }
                             if (activeCalls.isEmpty()) {
                                 handler.removeCallbacks(updateDurationRunnable)
+                                startTime = 0
                                 parentFragmentManager.popBackStack()
+                                if (isIncoming)
+                                    parentFragmentManager.popBackStack()
+
                             } else if (activeCalls.size == 1) {
                                 binding.tvCallerNumber.text = activeCalls[0].remoteAddress.username
                             } else {
@@ -301,6 +248,8 @@ class CallInProgressFragment : Fragment() {
                             } else {
                                 activeCalls[0].remoteAddress.username
                             }
+
+                            startTimerIfNeeded()
                         }
                     }
                     else -> {
@@ -323,6 +272,12 @@ class CallInProgressFragment : Fragment() {
         }
 
         LinphoneManager.core?.addListener(coreListener)
+
+        if (isIncoming) {
+            // ⏱ Start timer immediately for accepted incoming calls
+            startTime = System.currentTimeMillis()
+            handler.post(updateDurationRunnable)
+        }
     }
 
     private fun updateBandwidthUI(stats: CallStats) {
@@ -393,6 +348,36 @@ class CallInProgressFragment : Fragment() {
             .setMessage("Battery critically low ($level%). Call may drop soon.")
             .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
             .show()
+    }
+
+    private val updateDurationRunnable = object : Runnable {
+        override fun run() {
+            val elapsed = System.currentTimeMillis() - startTime
+            val minutes = TimeUnit.MILLISECONDS.toMinutes(elapsed)
+            val seconds = TimeUnit.MILLISECONDS.toSeconds(elapsed) % 60
+            binding.tvCallDuration.text = String.format("%02d:%02d", minutes, seconds)
+            handler.postDelayed(this, 1000)
+        }
+    }
+
+    private fun startTimerIfNeeded() {
+        if (startTime == 0L) {
+            startTime = System.currentTimeMillis()
+            handler.post(updateDurationRunnable)
+            // ensure UI shows timer instead of "Ringing..."
+            requireActivity().runOnUiThread {
+                binding.tvCallDuration.text = String.format(
+                    "%02d:%02d",
+                    TimeUnit.MILLISECONDS.toMinutes(0),
+                    TimeUnit.MILLISECONDS.toSeconds(0) % 60
+                )
+            }
+        }
+    }
+
+    private fun stopTimer() {
+        handler.removeCallbacks(updateDurationRunnable)
+        startTime = 0L
     }
 
     override fun onPause() {

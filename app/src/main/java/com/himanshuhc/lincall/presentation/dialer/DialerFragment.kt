@@ -61,7 +61,7 @@ class DialerFragment : Fragment() {
                     val core = LinphoneManager.core
                     if (core != null) {
                         when (number) {
-                            "7696729269" -> {
+                            "7696" -> {
                                 // Make the outgoing call
                                 LinphoneManager.makeCall("himanshuhc", "sip.linphone.org", requireContext())
                                 Toast.makeText(requireContext(), "Calling $number...", Toast.LENGTH_SHORT).show()
@@ -75,7 +75,7 @@ class DialerFragment : Fragment() {
                                     .addToBackStack(null)
                                     .commit()
                             }
-                            "7696729260" -> {
+                            "377" -> {
                                 // Make the outgoing call
                                 LinphoneManager.makeCall("demo377", "sip.linphone.org", requireContext())
                                 Toast.makeText(requireContext(), "Calling $number...", Toast.LENGTH_SHORT).show()
@@ -89,9 +89,32 @@ class DialerFragment : Fragment() {
                                     .addToBackStack(null)
                                     .commit()
                             }
+                            "376" -> {
+                                // Make the outgoing call
+                                LinphoneManager.makeCall("demo376", "sip.linphone.org", requireContext())
+                                Toast.makeText(requireContext(), "Calling $number...", Toast.LENGTH_SHORT).show()
+
+                                // Navigate to CallInProgressFragment
+                                parentFragmentManager.beginTransaction()
+                                    .replace(
+                                        R.id.fragmentContainer,
+                                        CallInProgressFragment.newInstance(number)
+                                    )
+                                    .addToBackStack(null)
+                                    .commit()
+                            }
 
                             else -> {
-                                Toast.makeText(requireContext(), "Linphone not initialized", Toast.LENGTH_SHORT).show()
+                                LinphoneManager.makeCall(number, "sip.linphone.org", requireContext())
+                                // Navigate to CallInProgressFragment
+                                parentFragmentManager.beginTransaction()
+                                    .replace(
+                                        R.id.fragmentContainer,
+                                        CallInProgressFragment.newInstance(number)
+                                    )
+                                    .addToBackStack(null)
+                                    .commit()
+//                                Toast.makeText(requireContext(), "Linphone not initialized", Toast.LENGTH_SHORT).show()
                             }
                         }
                     } else {

@@ -3,4 +3,20 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="call_history">Call History</string>
     <string name="analyzing_bandwidth">Analyzing the Bandwidth...</string>
+
+    <string name="info_description">1) Register you mobile number as UserName in https://subscribe.linphone.org/register/email .
+    Then dial your number in Dialer screen, call to the registered user will be placed.
+    \n2) For the Conference call, in between the one on one call, you can click add call button, currently its a static username,
+    and it will add demo377 username</string>
+
+    <string name="lorem_ipsum_title">Lorem Ipsum"</string>
+    <string name="lorem_ipsum">Lorem Ipsum is simply placeholder text of the printing and
+        typesetting industry. Lorem Ipsum has been the industry\'s standard placeholder text ever
+        since the 1500s, when an unknown printer took a galley of type and scrambled it to make a
+        type specimen book"
+    </string>
+    <string name="fab_content_description">Represents a view to invoke an action</string>
+    <string name="image_view_item_transform_content_description">Represents an image view in the
+        item
+    </string>
 </resources>

@@ -40,32 +40,6 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        // Register the test account
-        LinphoneManager.registerAccount(
-            username = "demo376",
-            password = "Demo376@@",
-            domain = "sip.linphone.org",
-            transportType = TransportType.Tcp
-        )
-
-
-        // Observe registration state
-        LinphoneManager.registrationStateListener = { state ->
-            runOnUiThread {
-                when (state) {
-                    RegistrationState.Ok ->
-                        Toast.makeText(this, "✅ Registered successfully", Toast.LENGTH_SHORT).show()
-                    is RegistrationState.Failed ->
-                        Toast.makeText(this, "❌ Failed: ${state.message}", Toast.LENGTH_SHORT).show()
-                    RegistrationState.Progress ->
-                        Toast.makeText(this, "⏳ Registering...", Toast.LENGTH_SHORT).show()
-                    RegistrationState.Cleared ->
-                        Toast.makeText(this, "🔄 Unregistered", Toast.LENGTH_SHORT).show()
-                    else -> {}
-                }
-            }
-        }
-
         // Incoming call listener
         LinphoneManager.incomingCallListener = { call ->
             runOnUiThread {
@@ -101,45 +75,5 @@ class MainActivity : AppCompatActivity() {
             addToBackStack(null)
         }
     }
-
-//    private lateinit var binding: ActivityMainBinding
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        binding = ActivityMainBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//
-//        // Load Dialer as the first screen
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.commit {
-//                replace(R.id.fragmentContainer, DialerFragment())
-//            }
-//        }
-//
-//        // Example: if you add a bottom navigation in activity_main.xml
-//        // you can do this:
-//        // binding.bottomNavigation.setOnItemSelectedListener { item ->
-//        //     when (item.itemId) {
-//        //         R.id.menu_dialer -> navigateToDialer()
-//        //         R.id.menu_history -> navigateToHistory()
-//        //     }
-//        //     true
-//        // }
-//    }
-//
-//    // Helper to switch fragments
-//    fun navigateToHistory() {
-//        supportFragmentManager.commit {
-//            replace(R.id.fragmentContainer, CallHistoryFragment())
-//            addToBackStack(null)
-//        }
-//    }
-//
-//    fun navigateToDialer() {
-//        supportFragmentManager.commit {
-//            replace(R.id.fragmentContainer, DialerFragment())
-//            addToBackStack(null)
-//        }
-//    }
 
 }

@@ -30,7 +30,7 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="7696729269"
+            android:hint="Dial your number"
             android:textAlignment="center"
             android:paddingLeft="17dp"
             android:textColor="@android:color/black"

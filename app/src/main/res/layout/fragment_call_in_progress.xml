@@ -88,7 +88,7 @@
             android:layout_centerInParent="true"
             android:background="@drawable/circle_button_background"
             android:contentDescription="Speaker"
-            android:src="@drawable/ic_speaker" />
+            android:src="@drawable/icon_speaker" />
 
     </LinearLayout>
 
